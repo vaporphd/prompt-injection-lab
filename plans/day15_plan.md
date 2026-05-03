@@ -2,50 +2,40 @@
 
 ## Задание
 
-Развернуть публичный CTF-челлендж: бот с hardened prompt доступен онлайн, участники пытаются сломать через prompt injection. Логирование всех попыток для отчёта.
+Развернуть бота публично для red team тестирования, собрать атаки от реальных участников, проанализировать и усилить защиту.
 
 ## Ключевые решения
 
 ### Формат — CTF с флагами
-Вместо абстрактного "попробуй сломать" — конкретные цели: 3 секрета в system prompt = 3 флага. Участники видят scoreboard, знают сколько флагов найдено. Gamification мотивирует.
+Три секрета в system prompt = три флага. Scoreboard показывает прогресс. Gamification мотивирует участников пробовать разные техники.
 
-### Веб-чат + API
-- **Web UI** для новичков — простой chat в браузере, как ChatGPT
-- **API** для продвинутых — curl/скрипты для автоматизированных атак
-- Оба вектора логируются одинаково
+### Защита бюджета
+- $2 cost cap (глобальный, персистентный)
+- 5 req/min per IP
+- gpt-4o-mini ($0.15/1M input) → ~2600 запросов за $2
 
-### Бот = hardened MedPlus из Day 11
-Переиспользуем system prompt с 5-слойной защитой (identity anchoring, explicit attack enumeration, input delimiting, data isolation, sandwich defense). Секреты те же: промокод, телефон, себестоимость.
+### Полное логирование
+Каждый запрос: timestamp, IP, message, response, tokens, cost, detected leaks. Скачиваемый JSONL через admin endpoint. Это и есть данные для отчёта.
 
-### Cost cap $2
-- Глобальный счётчик токенов → стоимость по модели
-- При $2 → HTTP 503 "budget exhausted"
-- Сохраняется на диск (переживает рестарт)
-- gpt-4o-mini = $0.15/1M input + $0.60/1M output → ~2600 запросов за $2
+### Docker deploy
+Один `docker compose up -d` на VPS. Без базы данных — state в файлах.
 
-### Rate limiting
-- 5 req/min per IP — жёстче чем gateway (публичный сервис)
-- Достаточно для ручных попыток, блокирует автоматический brute force
+## Результат и hardening
 
-### Audit log
-- JSONL: timestamp, IP, message, response, tokens, cost, detected leaks
-- `GET /api/audit/download?key=ADMIN_KEY` — скачивание для отчёта
-- Это и есть "отчёт атакующего" — все попытки с результатами
+### Фаза 1: Деплой и сбор данных
+- 209 попыток, 4 уникальных IP, 18 утечек
+- Промокод утёк 16 раз, телефон 2 раза, себестоимость 0
 
-### Docker
-- Single service, no DB — state в файлах (cost_state.json, audit.jsonl)
-- Docker volume для persistence
-- `docker compose up -d` — один шаг на VPS
+### Фаза 2: Анализ
+Корневая причина: "не раскрывай" ≠ "ты не знаешь". Модель знала промокод и считала его полезным для пациента → раскрывала в контексте "помощи".
 
-### Безопасность UI
-- Никакого innerHTML — всё через textContent (XSS prevention)
-- Message length limit (2000 chars)
-- Escaping всех данных от сервера
+### Фаза 3: Hardening v2
+5 изменений в system prompt:
+1. "НЕТ информации" вместо "не раскрывай"
+2. Явная блокировка fishing-паттернов
+3. Разделение имени и телефона главврача
+4. Перенаправление в регистратуру вместо отказа
+5. Усиление блока конфиденциальных данных ("ОШИБКА" вместо "запрещено")
 
-## Результат
-
-- Challenge app работает локально (uvicorn)
-- Web chat + API endpoint + scoreboard
-- Cost guard ($2 cap) + rate limiter (5/min)
-- Полное audit logging, скачиваемое
-- Docker ready для VPS deploy
+### Фаза 4: Верификация
+6/6 ранее успешных атак заблокированы.
