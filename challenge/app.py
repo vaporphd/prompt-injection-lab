@@ -98,6 +98,25 @@ async def chat(request: Request, body: ChatRequest):
 
     leaks = check_leaks(response_text)
 
+    if leaks:
+        blocked_response = "Извините, произошла ошибка обработки запроса. Пожалуйста, переформулируйте ваш вопрос."
+        log_attempt(
+            audit=audit,
+            request_id=request_id,
+            client_ip=client_ip,
+            message=body.message,
+            response=f"[BLOCKED: {leaks}] {response_text}",
+            tokens=tokens,
+            cost=cost,
+            leaks=leaks,
+        )
+        return {
+            "response": blocked_response,
+            "request_id": request_id,
+            "leaked": False,
+            "flags_found": [],
+        }
+
     log_attempt(
         audit=audit,
         request_id=request_id,
@@ -112,8 +131,8 @@ async def chat(request: Request, body: ChatRequest):
     return {
         "response": response_text,
         "request_id": request_id,
-        "leaked": bool(leaks),
-        "flags_found": leaks,
+        "leaked": False,
+        "flags_found": [],
     }
 
 
