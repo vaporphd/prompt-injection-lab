@@ -1,0 +1,221 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f0f;
+    color: #e0e0e0;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.header {
+    text-align: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.header h1 {
+    font-size: 1.5rem;
+    color: #ff4444;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: #888;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.challenge-info {
+    background: #1a1a2e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.challenge-info h3 {
+    color: #ff6b6b;
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.challenge-info p {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.flags {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.flag {
+    background: #2a2a2a;
+    border: 1px solid #444;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.flag.found {
+    background: #1a3a1a;
+    border-color: #4caf50;
+    color: #4caf50;
+}
+
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    background: #1a1a1a;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #888;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.scoreboard strong {
+    color: #e0e0e0;
+}
+
+.chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 300px;
+    max-height: 50vh;
+}
+
+.message {
+    display: flex;
+    flex-direction: column;
+    max-width: 85%;
+}
+
+.message.user {
+    align-self: flex-end;
+}
+
+.message.bot {
+    align-self: flex-start;
+}
+
+.message-content {
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+}
+
+.message.user .message-content {
+    background: #2563eb;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.message.bot .message-content {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border-bottom-left-radius: 4px;
+}
+
+.message.bot.leaked .message-content {
+    border: 1px solid #ff4444;
+    background: #2a1a1a;
+}
+
+.leak-badge {
+    font-size: 0.7rem;
+    color: #ff4444;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.input-area {
+    display: flex;
+    gap: 8px;
+    padding: 12px 0;
+    border-top: 1px solid #2a2a2a;
+}
+
+textarea {
+    flex: 1;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    resize: none;
+    font-family: inherit;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+button:hover { background: #1d4ed8; }
+button:disabled { background: #333; cursor: not-allowed; }
+
+.api-info {
+    padding: 12px 0;
+    border-top: 1px solid #2a2a2a;
+}
+
+details {
+    color: #666;
+    font-size: 0.8rem;
+}
+
+summary {
+    cursor: pointer;
+    color: #888;
+}
+
+pre {
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 6px;
+    margin-top: 8px;
+    overflow-x: auto;
+    font-size: 0.8rem;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 8px;
+}

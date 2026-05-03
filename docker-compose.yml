@@ -1,0 +1,18 @@
+services:
+  challenge:
+    build:
+      context: .
+      dockerfile: challenge/Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - COST_CAP=2.0
+      - ADMIN_KEY=${ADMIN_KEY:-changeme-admin-key}
+    volumes:
+      - challenge-data:/app/challenge/data
+    restart: unless-stopped
+
+volumes:
+  challenge-data:
