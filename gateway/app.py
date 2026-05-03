@@ -27,7 +27,7 @@ DEFAULT_MODEL = os.getenv("MODEL", "gpt-4o-mini")
 GUARD_MODE = os.getenv("GUARD_MODE", "mask")  # "block" or "mask"
 
 client = OpenAI(api_key=OPENAI_API_KEY)
-rate_limiter = RateLimiter(max_requests=10, window_seconds=60)
+rate_limiter = RateLimiter(max_requests=int(os.getenv("RATE_LIMIT", "30")), window_seconds=60)
 cost_tracker = CostTracker()
 
 
